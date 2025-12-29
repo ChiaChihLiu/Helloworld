@@ -53,7 +53,6 @@ TABLE: netsuite.optw_dw_dsi_st
 ```sql
 SUM(CASE WHEN data_type = 'FG + In Transit' THEN value ELSE 0 END)
 ```
-
 ### Purchase Forecast 可用月份偏移（核心邏輯）⭐⭐⭐
 
 **規則：**
@@ -64,23 +63,7 @@ SUM(CASE WHEN data_type = 'FG + In Transit' THEN value ELSE 0 END)
 **原因：**
 - 採購預測代表當月下單，實際到貨是下個月
 - 因此需要將期間往後推一個月
-
-**SQL 實現：**
-```sql
-TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTRING(data_type, 1, 6), 'YYYYMM'), 1), 'YYYYMM')
 ```
-
-**範例：**
-```sql
--- 將 Purchase Forecast 期間轉換為可用月份
-SELECT
-    SUBSTRING(data_type, 1, 6) as 原始期間,
-    TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTRING(data_type, 1, 6), 'YYYYMM'), 1), 'YYYYMM') as 可用月份
-FROM netsuite.optw_dw_dsi_st
-WHERE section = 'Purchase Forecast'
--- 結果：202512 → 202601
-```
-
 ### 庫存基準日選擇（核心邏輯）⭐⭐⭐
 
 **規則：**
