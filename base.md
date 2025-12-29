@@ -71,19 +71,4 @@ SUM(CASE WHEN data_type = 'FG + In Transit' THEN value ELSE 0 END)
 - 確保使用完整月份的庫存數據
 - 使用日期比較排序，不使用字串 MAX()
 
-**SQL 實現：**
-```sql
-WITH latest_valid_inventory_date AS (
-    SELECT
-        section,
-        SUBSTRING(section, 24) as cutoff_date_str,
-        TO_DATE(SUBSTRING(section, 24), 'DD-MON-YY') as cutoff_date
-    FROM netsuite.optw_dw_dsi_st
-    WHERE section LIKE 'Inventory cut off date:%'
-        AND TO_DATE(SUBSTRING(section, 24), 'DD-MON-YY')
-            BETWEEN DATE_TRUNC('month', ADD_MONTHS(CURRENT_DATE, -1)::TIMESTAMP)::DATE
-            AND LAST_DAY(ADD_MONTHS(CURRENT_DATE, -1))
-    ORDER BY cutoff_date DESC
-    LIMIT 1
-)
-```
+**⭐ 型號查詢規則** — 當用戶詢問特定型號時，所有 SQL 必須使用 `WHERE secondary_model LIKE '%model_name%'` 過濾
